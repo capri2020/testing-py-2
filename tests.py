@@ -48,6 +48,10 @@ class PartyTestsDatabase(unittest.TestCase):
         self.client = app.test_client()
         app.config['TESTING'] = True
 
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['RSVP'] = True
+
         # Connect to test database (uncomment when testing database)
         connect_to_db(app, "postgresql:///testdb")
 
@@ -66,10 +70,9 @@ class PartyTestsDatabase(unittest.TestCase):
         # FIXME: test that the games page displays the game from example_data()
 
         result = self.client.get("/games")
-        self.assertIn(b"Monopoly", result.data)
+        self.assertIn(b"Description", result.data)
         
         # print("FIXME")
-
 
 if __name__ == "__main__":
     unittest.main()
